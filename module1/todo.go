@@ -14,43 +14,43 @@ func newDynamicArray(capacity int) *DynamicArray {
 	return array
 }
 
-func (array *DynamicArray) add(item string) {
+func (array *DynamicArray) Add(item string) {
 	array.items = append(array.items, item)
 	array.count = array.count + 1
 }
 
-func (array DynamicArray) capacity() int {
+func (array DynamicArray) Capacity() int {
 	i := cap(array.items)
 
 	return i
 }
 
-func (array DynamicArray) size() int {
+func (array DynamicArray) Size() int {
 	i := len(array.items)
 
 	return i
 }
 
-func (array DynamicArray) get(index int) string {
+func (array DynamicArray) Get(index int) string {
 	i := array.items[index]
 	return i
 }
 
-func (array *DynamicArray) growArray() {
+func (array *DynamicArray) GrowArray() {
 	// append doubles the capacity of the slice when it fills up.
 	c := cap(array.items)
 	if array.count == c {
-		arr := make([]string, c*2)
+		arr := make([]string, 0, c*2)
 		copy(arr, array.items)
 	}
 }
 
-func (array *DynamicArray) remove(index int) {
+func (array *DynamicArray) Remove(index int) {
 	array.items = append(array.items[:index], array.items[index+1:]...)
 	array.count = array.count - 1
 }
 
-func (array *DynamicArray) insert(index int, item string) {
+func (array *DynamicArray) Insert(index int, item string) {
 	if index < 0 {
 		fmt.Println("Index can't be negative")
 	} else if index <= len(array.items) {
@@ -64,7 +64,7 @@ func (array *DynamicArray) insert(index int, item string) {
 
 }
 
-func (array DynamicArray) contains(item string) bool {
+func (array DynamicArray) Contains(item string) bool {
 
 	for _, s := range array.items {
 		if item == s {
@@ -75,7 +75,7 @@ func (array DynamicArray) contains(item string) bool {
 	return false
 }
 
-func (array DynamicArray) indexOf(item string) int {
+func (array DynamicArray) IndexOf(item string) int {
 
 	for i, s := range array.items {
 		if item == s {
@@ -86,7 +86,7 @@ func (array DynamicArray) indexOf(item string) int {
 	return -1
 }
 
-func (array *DynamicArray) clear() {
+func (array *DynamicArray) Clear() {
 	array.items = append(array.items[:0])
 	array.count = 0
 }
