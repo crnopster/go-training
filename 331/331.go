@@ -4,107 +4,75 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 )
 
 const one = 1
 
-func find(num int) []string {
+func find(numbers []int) []string {
 	s := make([]string, 0)
+	for _, num := range numbers {
 
-	var x, y, z int
-
-	if num < one {
-		s = append(s, fmt.Sprintf("%v - number must be positive", num))
-		return s
-	}
-
-loop0:
-	for {
-		y = 0
-	loop1:
-		for {
-			z = 0
-		loop2:
-			for {
-				if x*x+y*y+z*z == num {
-					s = append(s, fmt.Sprintf("for %v : x = %v, y = %v, z = %v\n", num, x, y, z))
-				}
-
-				if z*z > num {
-					break loop2
-				}
-				z++
-			}
-			if y*y > num {
-				break loop1
-			}
-			y++
+		if num < one {
+			s = append(s, fmt.Sprintf("%v - number must be positive", num))
+			continue
 		}
-		if x*x > num {
-			break loop0
+
+		for x := 0; x*x < num; x++ {
+			for y := 0; y*y < num; y++ {
+				for z := 0; z*z < num; z++ {
+					if x*x+y*y+z*z == num {
+						s = append(s, fmt.Sprintf("for %v : x = %v, y = %v, z = %v", num, x, y, z))
+					}
+				}
+			}
 		}
-		x++
 	}
 
 	return s
 }
 
-func check(numbers []string) {
-	scanner := bufio.NewScanner(os.Stdin)
+func check(numbers []string) []int {
+	var n []int
 
 	for _, number := range numbers {
 		nint, err := strconv.Atoi(number)
 		if err != nil {
-			log.Println("args must be intengers\n", err)
 			continue
 		}
 
-		log.Printf("number %v checked\n", nint)
-		fmt.Printf("Find for %v? : ", nint)
-		scanner.Scan()
-		text := scanner.Text()
-
-		if text == "Yes" || text == "Y" || text == "yes" || text == "y" {
-			fmt.Println(find(nint))
-		}
+		n = append(n, nint)
 	}
 
-	fmt.Print("Do you want to try another numbers? ")
-	repeat()
+	return n
 }
 
-func repeat() {
+func input() []string {
 	var n []string
 
 	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	text := scanner.Text()
-	fmt.Println(text)
 
-	if text == "Yes" || text == "Y" || text == "yes" || text == "y" {
-		for {
-			fmt.Print("Input number: ")
-			scanner.Scan()
-			text = scanner.Text()
-			n = append(n, text)
+	for {
+		fmt.Print("Input number: ")
+		scanner.Scan()
+		text := scanner.Text()
+		n = append(n, text)
 
-			if text == "" {
-				n = n[0 : len(n)-1]
-				check(n)
+		if text == "" {
+			n = n[0 : len(n)-1]
 
-				break
-			}
+			break
 		}
 	}
+
+	return n
 }
 
 func readFile(filename string) []string {
 	file, err := os.Open(filename)
 	if err != nil {
-		log.Println(err)
+		return nil
 	}
 	defer file.Close()
 
@@ -120,7 +88,7 @@ func readFile(filename string) []string {
 }
 
 func main() {
-	filename := flag.String("f", "", "for taking number from file")
+	filename := flag.String("f", "", "for taking numbers from file")
 
 	flag.Parse()
 
@@ -128,13 +96,10 @@ func main() {
 
 	switch {
 	case len(*filename) != 0:
-		f := readFile(*filename)
-		check(f)
+		fmt.Println(find(check(readFile(*filename))))
 	case len(args) == 0:
-		fmt.Println("Input manually? :")
-		repeat()
-
+		fmt.Println(find(check(input())))
 	default:
-		check(args)
+		fmt.Println(find(check(args)))
 	}
 }
