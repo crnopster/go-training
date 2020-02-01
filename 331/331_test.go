@@ -5,8 +5,9 @@ import (
 	"math/rand"
 	"reflect"
 	"testing"
-	"time"
 )
+
+const maxRandNumber = 1000
 
 func Test_readFile(t *testing.T) {
 	var s1, s2 []string
@@ -36,6 +37,7 @@ func Test_readFile(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			if got := readFile(tt.filename); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readFile() = %v, want %v", got, tt.want)
@@ -45,17 +47,18 @@ func Test_readFile(t *testing.T) {
 }
 
 func Test_check(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
+	var i1 []int
 
-	var i, i3 []int
+	i3 := make([]int, 0)
 
-	var s, s2, s3 []string
+	var s1, s2, s3 []string
 
-	i1 := rand.Int()
-	i2 := rand.Int()
-	i = append(i, i1, i2)
-	s = append(s, fmt.Sprint(i1), fmt.Sprint(i2))
-	s2 = append(s, "somestring", "lalala")
+	num1 := rand.Intn(maxRandNumber)
+	num2 := rand.Intn(maxRandNumber)
+	i1 = append(i1, num1, num2)
+	s1 = append(s1, fmt.Sprint(num1), fmt.Sprint(num2))
+	s2 = s1
+	s2 = append(s2, "somestring", "lalala")
 
 	tests := []struct {
 		name    string
@@ -64,13 +67,13 @@ func Test_check(t *testing.T) {
 	}{
 		{
 			name:    "first test check",
-			numbers: s,
-			want:    i,
+			numbers: s1,
+			want:    i1,
 		},
 		{
 			name:    "second test check",
 			numbers: s2,
-			want:    i,
+			want:    i1,
 		},
 		{
 			name:    "third test check",
@@ -79,6 +82,7 @@ func Test_check(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			if got := check(tt.numbers); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("check() = %v, want %v", got, tt.want)
@@ -88,33 +92,15 @@ func Test_check(t *testing.T) {
 }
 
 func Test_find(t *testing.T) {
-	var n1, n2 []int
-	n1 = append(n1, 1, 152, 99, 2)
+	var n1, n2, n3 []int
+	n1 = append(n1, 1, 2)
 	n2 = append(n2, 15, 33, 0, 13)
 
-	var s1, s2 []string
+	var s1, s2, s3 []string
 	s1 = append(s1,
 		"for 1 : x = 0, y = 0, z = 1",
 		"for 1 : x = 0, y = 1, z = 0",
 		"for 1 : x = 1, y = 0, z = 0",
-		"for 152 : x = 2, y = 2, z = 12",
-		"for 152 : x = 2, y = 12, z = 2",
-		"for 152 : x = 4, y = 6, z = 10",
-		"for 152 : x = 4, y = 10, z = 6",
-		"for 152 : x = 6, y = 4, z = 10",
-		"for 152 : x = 6, y = 10, z = 4",
-		"for 152 : x = 10, y = 4, z = 6",
-		"for 152 : x = 10, y = 6, z = 4",
-		"for 152 : x = 12, y = 2, z = 2",
-		"for 99 : x = 1, y = 7, z = 7",
-		"for 99 : x = 3, y = 3, z = 9",
-		"for 99 : x = 3, y = 9, z = 3",
-		"for 99 : x = 5, y = 5, z = 7",
-		"for 99 : x = 5, y = 7, z = 5",
-		"for 99 : x = 7, y = 1, z = 7",
-		"for 99 : x = 7, y = 5, z = 5",
-		"for 99 : x = 7, y = 7, z = 1",
-		"for 99 : x = 9, y = 3, z = 3",
 		"for 2 : x = 0, y = 1, z = 1",
 		"for 2 : x = 1, y = 0, z = 1",
 		"for 2 : x = 1, y = 1, z = 0",
@@ -150,8 +136,15 @@ func Test_find(t *testing.T) {
 			numbers: n2,
 			want:    s2,
 		},
+		{
+			name:    "third find test",
+			numbers: n3,
+			want:    s3,
+		},
 	}
+
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			if got := find(tt.numbers); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("find() = %v, want %v", got, tt.want)

@@ -11,17 +11,17 @@ import (
 const one = 1
 
 func find(numbers []int) []string {
-	s := make([]string, 0)
-	for _, num := range numbers {
+	var s []string
 
+	for _, num := range numbers {
 		if num < one {
 			s = append(s, fmt.Sprintf("%v - number must be positive", num))
 			continue
 		}
 
-		for x := 0; x*x < num; x++ {
-			for y := 0; y*y < num; y++ {
-				for z := 0; z*z < num; z++ {
+		for x := 0; x*x < num+1; x++ {
+			for y := 0; y*y < num+1; y++ {
+				for z := 0; z*z < num+1; z++ {
 					if x*x+y*y+z*z == num {
 						s = append(s, fmt.Sprintf("for %v : x = %v, y = %v, z = %v", num, x, y, z))
 					}
@@ -34,7 +34,7 @@ func find(numbers []int) []string {
 }
 
 func check(numbers []string) []int {
-	var n []int
+	intnumbers := make([]int, 0)
 
 	for _, number := range numbers {
 		nint, err := strconv.Atoi(number)
@@ -42,10 +42,10 @@ func check(numbers []string) []int {
 			continue
 		}
 
-		n = append(n, nint)
+		intnumbers = append(intnumbers, nint)
 	}
 
-	return n
+	return intnumbers
 }
 
 func input() []string {
